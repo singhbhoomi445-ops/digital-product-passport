@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="ChatGPT">
+  <diagram name="DFD Level 0" id="dfd0-dpp">
+    <mxGraphModel dx="1075" dy="591" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" value="Admin" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="owner" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" value="Product Owner" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="repairer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" value="Repair Technician" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="refurb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" value="Refurbisher" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="recycler" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" value="Recycler" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="system" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;" value="0. DIGITAL PRODUCT PASSPORT SYSTEM&#xa;&#xa;Manage products, QR identity, ownership, repair, refurbishment, reuse, recycling and lifecycle history" vertex="1">
+          <mxGeometry height="260" width="350" x="390" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="qr" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" value="QR Scanner / Mobile Browser" vertex="1">
+          <mxGeometry height="70" width="190" x="870" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="db" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;strokeWidth=2;" value="Product &amp; Lifecycle Database" vertex="1">
+          <mxGeometry height="100" width="230" x="850" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="admin" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="system" value="Product / User Data">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="owner" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;startArrow=block;" target="system" value="View / Ownership">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="repairer" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="system" value="Repair Records">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="refurb" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="system" value="Refurbishment Records">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="recycler" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="system" value="Recycling Records">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="qr" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;startArrow=block;" target="system" value="Scan QR / Product ID">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="system" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;startArrow=block;" target="db" value="Read / Write Data">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="system" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="owner" value="Passport / Status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

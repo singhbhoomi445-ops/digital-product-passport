@@ -1,0 +1,123 @@
+<mxfile host="app.diagrams.net" agent="ChatGPT">
+  <diagram name="Use Case Diagram" id="usecase-dpp">
+    <mxGraphModel dx="1229" dy="676" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;" value="Digital Product Passport Web Application" vertex="1">
+          <mxGeometry height="610" width="620" x="300" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Admin" vertex="1">
+          <mxGeometry height="100" width="60" x="80" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="owner" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Product Owner" vertex="1">
+          <mxGeometry height="100" width="60" x="1070" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="repairer" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Repair Technician" vertex="1">
+          <mxGeometry height="100" width="60" x="120" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="refurbisher" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Refurbisher" vertex="1">
+          <mxGeometry height="100" width="60" x="40" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="recycler" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Recycler" vertex="1">
+          <mxGeometry height="100" width="60" x="1020" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="login" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Login / Authentication" vertex="1">
+          <mxGeometry height="60" width="170" x="430" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="manageUsers" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Manage Users &amp; Roles" vertex="1">
+          <mxGeometry height="60" width="190" x="390" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="registerProduct" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Register Product" vertex="1">
+          <mxGeometry height="60" width="160" x="710" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="qr" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Generate / Scan QR Code" vertex="1">
+          <mxGeometry height="60" width="190" x="430" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="passport" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="View Digital Product Passport" vertex="1">
+          <mxGeometry height="60" width="210" x="650" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="repair" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Record Repair &amp; Components" vertex="1">
+          <mxGeometry height="60" width="210" x="390" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="ownership" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Transfer Ownership" vertex="1">
+          <mxGeometry height="60" width="180" x="650" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="refurb" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Record Refurbishment &amp; Condition" vertex="1">
+          <mxGeometry height="60" width="230" x="390" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="recycle" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Record Recycling &amp; Recovery" vertex="1">
+          <mxGeometry height="60" width="210" x="650" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="lifecycle" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="View Lifecycle History" vertex="1">
+          <mxGeometry height="60" width="190" x="510" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="admin" style="endArrow=none;html=1;" target="login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="admin" style="endArrow=none;html=1;" target="manageUsers">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="admin" style="endArrow=none;html=1;" target="registerProduct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="admin" style="endArrow=none;html=1;" target="qr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="owner" style="endArrow=none;html=1;" target="login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="owner" style="endArrow=none;html=1;" target="passport">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="owner" style="endArrow=none;html=1;" target="ownership">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="owner" style="endArrow=none;html=1;" target="qr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="repairer" style="endArrow=none;html=1;" target="login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="repairer" style="endArrow=none;html=1;" target="qr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="repairer" style="endArrow=none;html=1;" target="passport">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="repairer" style="endArrow=none;html=1;" target="repair">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="refurbisher" style="endArrow=none;html=1;" target="login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="refurbisher" style="endArrow=none;html=1;" target="qr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="refurbisher" style="endArrow=none;html=1;" target="refurb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" style="endArrow=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="login">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="420" as="sourcePoint" />
+            <mxPoint x="620.2345813435641" y="79.9990964763326" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="recycler" style="endArrow=none;html=1;" target="qr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="recycler" style="endArrow=none;html=1;" target="recycle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="passport" style="endArrow=none;html=1;" target="lifecycle">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="400" />
+              <mxPoint x="640" y="470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

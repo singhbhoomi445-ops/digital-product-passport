@@ -1,0 +1,97 @@
+<mxfile host="app.diagrams.net" agent="ChatGPT">
+  <diagram name="ER Diagram" id="erd-dpp">
+    <mxGraphModel dx="2602" dy="788" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="users" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="USERS&#xa;PK id&#xa;name&#xa;email&#xa;password_hash&#xa;role&#xa;created_at" vertex="1">
+          <mxGeometry height="150" width="210" x="50" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="products" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="PRODUCTS&#xa;PK id&#xa;product_id&#xa;product_name&#xa;product_type&#xa;brand&#xa;model&#xa;serial_number&#xa;manufacturing_date&#xa;purchase_date&#xa;warranty&#xa;condition&#xa;FK current_owner_id&#xa;created_at" vertex="1">
+          <mxGeometry height="220" width="270" x="390" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ownership" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="OWNERSHIP&#xa;PK id&#xa;FK product_id&#xa;FK previous_owner_id&#xa;FK new_owner_id&#xa;transfer_date" vertex="1">
+          <mxGeometry height="150" width="230" x="760" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="repairs" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="REPAIRS&#xa;PK id&#xa;FK product_id&#xa;FK technician_id&#xa;problem&#xa;diagnosis&#xa;repair_action&#xa;component_replaced&#xa;repair_date&#xa;condition_after" vertex="1">
+          <mxGeometry height="190" width="250" x="40" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="components" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="COMPONENTS&#xa;PK id&#xa;FK product_id&#xa;component_name&#xa;serial_number&#xa;status&#xa;installed_date&#xa;removed_date" vertex="1">
+          <mxGeometry height="170" width="230" x="390" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="refurb" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="REFURBISHMENTS&#xa;PK id&#xa;FK product_id&#xa;FK refurbisher_id&#xa;work_performed&#xa;components_replaced&#xa;testing_result&#xa;final_condition&#xa;refurbishment_date" vertex="1">
+          <mxGeometry height="190" width="260" x="720" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="recycling" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="RECYCLING&#xa;PK id&#xa;FK product_id&#xa;FK recycler_id&#xa;recycling_date&#xa;materials_recovered&#xa;recovery_details" vertex="1">
+          <mxGeometry height="150" width="250" x="40" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="events" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="LIFECYCLE_EVENTS&#xa;PK id&#xa;FK product_id&#xa;FK performed_by&#xa;event_type&#xa;event_date&#xa;description&#xa;created_at" vertex="1">
+          <mxGeometry height="150" width="250" x="390" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="qr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=10;strokeWidth=2;" value="QR_CODES&#xa;PK id&#xa;FK product_id&#xa;qr_token&#xa;created_at&#xa;status" vertex="1">
+          <mxGeometry height="150" width="230" x="720" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERone;startArrow=ERmany;" target="products" value="owns / current owner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="products" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;" target="ownership" value="has history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="products" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;" target="repairs" value="has repairs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERone;startArrow=ERmany;" target="repairs" value="performed by">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="products" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;" target="components" value="contains">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="products" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;" target="refurb" value="has refurbishment">
+          <mxGeometry relative="1" x="-0.0526" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="850" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERone;startArrow=ERmany;" target="refurb" value="performed by">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="300" />
+              <mxPoint x="850" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="products" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;" target="recycling" value="has recycling record">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="20" y="160" />
+              <mxPoint x="20" y="725" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERone;startArrow=ERmany;" value="performed by">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="210" as="sourcePoint" />
+            <mxPoint x="300" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="products" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;" target="events" value="records events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERone;startArrow=ERmany;entryX=0;entryY=0.4;entryDx=0;entryDy=0;entryPerimeter=0;" target="events" value="created by">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="192.5" as="sourcePoint" />
+            <mxPoint x="360" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERone;startArrow=ERone;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="qr" value="has QR">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="660" y="220" as="sourcePoint" />
+            <mxPoint x="700" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
