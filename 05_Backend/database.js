@@ -8,9 +8,9 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
-===========================================================
+
 // DATABASE INITIALIZATION
-// ============================================================
+// 
 
 async function initializeDatabase() {
   try {
