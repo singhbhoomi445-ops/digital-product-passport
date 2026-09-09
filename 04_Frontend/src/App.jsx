@@ -4,7 +4,7 @@ import "./App.css";
 
 const STORAGE_KEY = "dpp_products";
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "import.meta.env.VITE_API_URL;";
 const NETWORK_IP = "10.250.46.190";
 
 const emptyProduct = {
