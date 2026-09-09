@@ -4,7 +4,21 @@ import "./App.css";
 
 const STORAGE_KEY = "dpp_products";
 
-const API_BASE_URL = "import.meta.env.VITE_API_URL;";
+/*
+============================================================
+BACKEND API
+============================================================
+Vercel reads VITE_API_URL from Environment Variables.
+
+Example:
+VITE_API_URL=https://your-render-backend.onrender.com
+============================================================
+*/
+
+const API_BASE_URL = String(
+  import.meta.env.VITE_API_URL || ""
+).replace(/\/+$/, "");
+
 const NETWORK_IP = "10.250.46.190";
 
 const emptyProduct = {
@@ -85,6 +99,12 @@ const demoProducts = [
   },
 ];
 
+/*
+============================================================
+LOCAL STORAGE
+============================================================
+*/
+
 function getProducts() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -98,11 +118,179 @@ function getProducts() {
       return demoProducts;
     }
 
-    return JSON.parse(saved);
+    const parsed = JSON.parse(saved);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : demoProducts;
   } catch {
     return demoProducts;
   }
 }
+
+/*
+============================================================
+NORMALIZE BACKEND PRODUCT
+============================================================
+*/
+
+function normalizeProduct(product) {
+  if (!product) {
+    return null;
+  }
+
+  return {
+    id:
+      product.id ||
+      product.productId ||
+      "",
+
+    productId:
+      product.productId ||
+      product.id ||
+      "",
+
+    name:
+      product.name ||
+      "",
+
+    brand:
+      product.brand ||
+      product.manufacturer ||
+      "",
+
+    category:
+      product.category ||
+      "Device",
+
+    description:
+      product.description ||
+      "",
+
+    modelNumber:
+      product.modelNumber ||
+      product.model_number ||
+      "",
+
+    serialNumber:
+      product.serialNumber ||
+      product.serial_number ||
+      "",
+
+    operatingSystem:
+      product.operatingSystem ||
+      product.operating_system ||
+      "",
+
+    processor:
+      product.processor ||
+      "",
+
+    ram:
+      product.ram ||
+      "",
+
+    storage:
+      product.storage ||
+      "",
+
+    batteryCapacity:
+      product.batteryCapacity ||
+      product.battery_capacity ||
+      "",
+
+    manufacturingLocation:
+      product.manufacturingLocation ||
+      product.manufacturing_location ||
+      "",
+
+    manufacturingDate:
+      product.manufacturingDate ||
+      product.manufacturing_date ||
+      "",
+
+    carbonFootprint:
+      product.carbonFootprint ||
+      product.carbon_footprint ||
+      "",
+
+    energySource:
+      product.energySource ||
+      product.energy_source ||
+      "",
+
+    deviceCondition:
+      product.deviceCondition ||
+      product.device_condition ||
+      "",
+
+    expectedLifespan:
+      product.expectedLifespan ||
+      product.expected_lifespan ||
+      "",
+
+    repairability:
+      product.repairability ||
+      "",
+
+    repairInfo:
+      product.repairInfo ||
+      product.repair_info ||
+      "",
+
+    reusePathway:
+      product.reusePathway ||
+      product.reuse_pathway ||
+      "",
+
+    recyclableComponents:
+      product.recyclableComponents ||
+      product.recyclable_components ||
+      "",
+
+    recyclingInfo:
+      product.recyclingInfo ||
+      product.recycling_info ||
+      "",
+
+    dataDisposal:
+      product.dataDisposal ||
+      product.data_disposal ||
+      "",
+
+    endOfLife:
+      product.endOfLife ||
+      product.end_of_life ||
+      "",
+
+    image:
+      product.image ||
+      "",
+
+    year:
+      product.year ||
+      "",
+
+    status:
+      product.status ||
+      "Active",
+
+    material:
+      product.material ||
+      "",
+
+    createdAt:
+      product.createdAt ||
+      product.created_at ||
+      new Date().toISOString(),
+  };
+}
+
+/*
+============================================================
+PRODUCT ID
+============================================================
+*/
 
 function createProductId(products) {
   const numbers = products
@@ -111,7 +299,9 @@ function createProductId(products) {
         product.id || product.productId || ""
       ).match(/DPP-(\d+)/);
 
-      return match ? Number(match[1]) : 0;
+      return match
+        ? Number(match[1])
+        : 0;
     })
     .filter(Boolean);
 
@@ -123,9 +313,16 @@ function createProductId(products) {
   return `DPP-${String(nextNumber).padStart(4, "0")}`;
 }
 
+/*
+============================================================
+QR ENCODE
+============================================================
+*/
+
 function encodeProduct(product) {
   try {
-    const json = JSON.stringify(product);
+    const json =
+      JSON.stringify(product);
 
     const bytes =
       new TextEncoder().encode(json);
@@ -145,24 +342,33 @@ function encodeProduct(product) {
   }
 }
 
+/*
+============================================================
+QR DECODE
+============================================================
+*/
+
 function decodeProduct(value) {
   try {
-    const base64 = value
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
+    const base64 =
+      value
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
 
-    const padding = "=".repeat(
-      (4 - (base64.length % 4)) % 4
-    );
+    const padding =
+      "=".repeat(
+        (4 - (base64.length % 4)) % 4
+      );
 
-    const binary = atob(
-      base64 + padding
-    );
+    const binary =
+      atob(base64 + padding);
 
-    const bytes = Uint8Array.from(
-      binary,
-      (char) => char.charCodeAt(0)
-    );
+    const bytes =
+      Uint8Array.from(
+        binary,
+        (char) =>
+          char.charCodeAt(0)
+      );
 
     return JSON.parse(
       new TextDecoder().decode(bytes)
@@ -177,28 +383,37 @@ function decodeProduct(value) {
 QR URL
 ============================================================
 
-IMPORTANT:
-
-Computer:
+LOCAL COMPUTER:
 http://localhost:5173
 
-Phone:
+LOCAL PHONE:
 http://10.250.46.190:5173
 
-The QR MUST use the network IP instead of localhost.
+VERCEL:
+https://your-project.vercel.app
+
+On Vercel, the current public origin is used automatically.
 ============================================================
 */
 
 function getPassportUrl(product) {
-  const encoded = encodeProduct(product);
+  const encoded =
+    encodeProduct(product);
 
   const protocol =
     window.location.protocol || "http:";
 
-  const port =
-    window.location.port || "5173";
+  let host =
+    window.location.hostname;
 
-  let host = window.location.hostname;
+  const port =
+    window.location.port;
+
+  /*
+  ----------------------------------------------------------
+  LOCAL DEVELOPMENT
+  ----------------------------------------------------------
+  */
 
   if (
     host === "localhost" ||
@@ -206,10 +421,29 @@ function getPassportUrl(product) {
     host === "::1"
   ) {
     host = NETWORK_IP;
+
+    return `${protocol}//${host}:5173${window.location.pathname}?passport=${encoded}`;
   }
 
-  return `${protocol}//${host}:${port}${window.location.pathname}?passport=${encoded}`;
+  /*
+  ----------------------------------------------------------
+  PUBLIC VERCEL DEPLOYMENT
+  ----------------------------------------------------------
+  */
+
+  const origin =
+    port
+      ? `${protocol}//${host}:${port}`
+      : `${protocol}//${host}`;
+
+  return `${origin}${window.location.pathname}?passport=${encoded}`;
 }
+
+/*
+============================================================
+DATE FORMAT
+============================================================
+*/
 
 function formatDate(date) {
   if (!date) {
@@ -217,7 +451,9 @@ function formatDate(date) {
   }
 
   try {
-    return new Date(date).toLocaleDateString(
+    return new Date(
+      date
+    ).toLocaleDateString(
       "en-IN",
       {
         day: "2-digit",
@@ -229,6 +465,12 @@ function formatDate(date) {
     return date;
   }
 }
+
+/*
+============================================================
+APP
+============================================================
+*/
 
 function App() {
   const [products, setProducts] =
@@ -279,23 +521,59 @@ function App() {
 
   /*
   ============================================================
-  CHECK BACKEND
+  LOAD PRODUCTS FROM POSTGRESQL
   ============================================================
   */
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/`)
+    if (!API_BASE_URL) {
+      setApiStatus("offline");
+      return;
+    }
+
+    fetch(
+      `${API_BASE_URL}/api/products`
+    )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Backend unavailable");
+          throw new Error(
+            "Backend unavailable"
+          );
         }
 
         return response.json();
       })
-      .then(() => {
+      .then((data) => {
+        const backendProducts =
+          Array.isArray(data)
+            ? data
+            : Array.isArray(
+                data?.products
+              )
+            ? data.products
+            : [];
+
+        if (
+          backendProducts.length
+        ) {
+          const normalized =
+            backendProducts
+              .map(
+                normalizeProduct
+              )
+              .filter(Boolean);
+
+          setProducts(normalized);
+        }
+
         setApiStatus("online");
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(
+          "Backend connection error:",
+          error
+        );
+
         setApiStatus("offline");
       });
   }, []);
@@ -320,11 +598,24 @@ function App() {
     }
 
     const decoded =
-      decodeProduct(passportData);
+      decodeProduct(
+        passportData
+      );
 
     if (decoded) {
-      setPassportProduct(decoded);
-      setSelectedProduct(decoded);
+      const normalized =
+        normalizeProduct(
+          decoded
+        );
+
+      setPassportProduct(
+        normalized || decoded
+      );
+
+      setSelectedProduct(
+        normalized || decoded
+      );
+
       setPage("passport");
     }
   }, []);
@@ -345,7 +636,8 @@ function App() {
         setToast("");
       }, 2800);
 
-    return () => clearTimeout(timer);
+    return () =>
+      clearTimeout(timer);
   }, [toast]);
 
   /*
@@ -357,7 +649,9 @@ function App() {
   const filteredProducts =
     useMemo(() => {
       const query =
-        search.trim().toLowerCase();
+        search
+          .trim()
+          .toLowerCase();
 
       if (!query) {
         return products;
@@ -378,7 +672,10 @@ function App() {
             .toLowerCase()
             .includes(query)
       );
-    }, [products, search]);
+    }, [
+      products,
+      search,
+    ]);
 
   /*
   ============================================================
@@ -403,12 +700,17 @@ function App() {
                 product.recyclability ||
                 product.recycledContent ||
                 ""
-              ).replace("%", "")
+              ).replace(
+                "%",
+                ""
+              )
             )
           )
           .filter(
             (value) =>
-              !Number.isNaN(value)
+              !Number.isNaN(
+                value
+              )
           );
 
       if (!values.length) {
@@ -417,10 +719,14 @@ function App() {
 
       return Math.round(
         values.reduce(
-          (sum, value) =>
+          (
+            sum,
+            value
+          ) =>
             sum + value,
           0
-        ) / values.length
+        ) /
+          values.length
       );
     }, [products]);
 
@@ -430,16 +736,20 @@ function App() {
   ============================================================
   */
 
-  const handleInput = (event) => {
+  const handleInput = (
+    event
+  ) => {
     const {
       name,
       value,
     } = event.target;
 
-    setForm((current) => ({
-      ...current,
-      [name]: value,
-    }));
+    setForm(
+      (current) => ({
+        ...current,
+        [name]: value,
+      })
+    );
   };
 
   /*
@@ -448,17 +758,20 @@ function App() {
   ============================================================
   */
 
-  const openAddProduct = () => {
-    setEditingId(null);
+  const openAddProduct =
+    () => {
+      setEditingId(null);
 
-    setForm({
-      ...emptyProduct,
-      productId:
-        createProductId(products),
-    });
+      setForm({
+        ...emptyProduct,
+        productId:
+          createProductId(
+            products
+          ),
+      });
 
-    setPage("add");
-  };
+      setPage("add");
+    };
 
   /*
   ============================================================
@@ -466,18 +779,19 @@ function App() {
   ============================================================
   */
 
-  const openEditProduct = (
-    product
-  ) => {
-    setEditingId(product.id);
+  const openEditProduct =
+    (product) => {
+      setEditingId(
+        product.id
+      );
 
-    setForm({
-      ...emptyProduct,
-      ...product,
-    });
+      setForm({
+        ...emptyProduct,
+        ...product,
+      });
 
-    setPage("add");
-  };
+      setPage("add");
+    };
 
   /*
   ============================================================
@@ -485,301 +799,343 @@ function App() {
   ============================================================
   */
 
-  const saveProduct = async (
-    event
-  ) => {
-    event.preventDefault();
+  const saveProduct =
+    async (event) => {
+      event.preventDefault();
 
-    if (!form.name.trim()) {
-      setToast(
-        "Please enter a device name."
+      if (!form.name.trim()) {
+        setToast(
+          "Please enter a device name."
+        );
+
+        return;
+      }
+
+      if (!form.brand.trim()) {
+        setToast(
+          "Please enter the brand / manufacturer."
+        );
+
+        return;
+      }
+
+      const generatedId =
+        form.productId ||
+        createProductId(
+          products
+        );
+
+      const product = {
+        ...form,
+
+        id: generatedId,
+
+        productId:
+          generatedId,
+
+        createdAt:
+          editingId
+            ? products.find(
+                (item) =>
+                  item.id ===
+                  editingId
+              )?.createdAt ||
+              new Date().toISOString()
+            : new Date().toISOString(),
+      };
+
+      /*
+      ==========================================================
+      BACKEND PAYLOAD
+      ==========================================================
+      */
+
+      const backendPayload = {
+        id: generatedId,
+
+        name:
+          product.name,
+
+        category:
+          product.category ||
+          "Device",
+
+        year:
+          product.year ||
+          new Date()
+            .getFullYear()
+            .toString(),
+
+        status:
+          product.status ||
+          "Active",
+
+        manufacturer:
+          product.brand,
+
+        material:
+          product.material ||
+          "Not specified",
+
+        repairability:
+          product.repairability ||
+          "Not specified",
+
+        recyclability:
+          product.recyclability ||
+          "Not specified",
+
+        description:
+          product.description,
+
+        model_number:
+          product.modelNumber,
+
+        serial_number:
+          product.serialNumber,
+
+        operating_system:
+          product.operatingSystem,
+
+        processor:
+          product.processor,
+
+        ram:
+          product.ram,
+
+        storage:
+          product.storage,
+
+        battery_capacity:
+          product.batteryCapacity,
+
+        manufacturing_location:
+          product.manufacturingLocation,
+
+        manufacturing_date:
+          product.manufacturingDate,
+
+        carbon_footprint:
+          product.carbonFootprint,
+
+        energy_source:
+          product.energySource,
+
+        device_condition:
+          product.deviceCondition,
+
+        expected_lifespan:
+          product.expectedLifespan,
+
+        repair_info:
+          product.repairInfo,
+
+        reuse_pathway:
+          product.reusePathway,
+
+        recyclable_components:
+          product.recyclableComponents,
+
+        recycling_info:
+          product.recyclingInfo,
+
+        data_disposal:
+          product.dataDisposal,
+
+        end_of_life:
+          product.endOfLife,
+
+        image:
+          product.image,
+      };
+
+      /*
+      ==========================================================
+      UPDATE EXISTING PRODUCT
+      ==========================================================
+      */
+
+      if (editingId) {
+        try {
+          if (!API_BASE_URL) {
+            throw new Error(
+              "API URL missing"
+            );
+          }
+
+          const response =
+            await fetch(
+              `${API_BASE_URL}/api/products/${editingId}`,
+              {
+                method: "PUT",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify(
+                    backendPayload
+                  ),
+              }
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              "Update failed"
+            );
+          }
+
+          const data =
+            await response.json();
+
+          const backendProduct =
+            normalizeProduct(
+              data?.product
+            );
+
+          setProducts(
+            (current) =>
+              current.map(
+                (item) =>
+                  item.id ===
+                  editingId
+                    ? backendProduct ||
+                      product
+                    : item
+              )
+          );
+
+          setApiStatus(
+            "online"
+          );
+
+          setToast(
+            "Device passport updated in PostgreSQL."
+          );
+        } catch (error) {
+          console.error(
+            error
+          );
+
+          setProducts(
+            (current) =>
+              current.map(
+                (item) =>
+                  item.id ===
+                  editingId
+                    ? product
+                    : item
+              )
+          );
+
+          setToast(
+            "Backend unavailable. Saved locally."
+          );
+        }
+      }
+
+      /*
+      ==========================================================
+      CREATE NEW PRODUCT
+      ==========================================================
+      */
+
+      else {
+        try {
+          if (!API_BASE_URL) {
+            throw new Error(
+              "API URL missing"
+            );
+          }
+
+          const response =
+            await fetch(
+              `${API_BASE_URL}/api/products`,
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+
+                body:
+                  JSON.stringify(
+                    backendPayload
+                  ),
+              }
+            );
+
+          if (!response.ok) {
+            const errorData =
+              await response
+                .json()
+                .catch(
+                  () => null
+                );
+
+            throw new Error(
+              errorData?.message ||
+                "Create failed"
+            );
+          }
+
+          const data =
+            await response.json();
+
+          const backendProduct =
+            normalizeProduct(
+              data?.product
+            );
+
+          const finalProduct =
+            backendProduct ||
+            product;
+
+          setProducts(
+            (current) => [
+              finalProduct,
+              ...current,
+            ]
+          );
+
+          setApiStatus(
+            "online"
+          );
+
+          setToast(
+            "Device passport created in PostgreSQL."
+          );
+        } catch (error) {
+          console.error(
+            error
+          );
+
+          setProducts(
+            (current) => [
+              product,
+              ...current,
+            ]
+          );
+
+          setToast(
+            "Backend unavailable. Saved locally."
+          );
+        }
+      }
+
+      setForm(
+        emptyProduct
       );
-      return;
-    }
 
-    if (!form.brand.trim()) {
-      setToast(
-        "Please enter the brand / manufacturer."
+      setEditingId(null);
+
+      setPage(
+        "products"
       );
-      return;
-    }
-
-    const generatedId =
-      form.productId ||
-      createProductId(products);
-
-    const product = {
-      ...form,
-
-      id: generatedId,
-      productId: generatedId,
-
-      createdAt:
-        editingId
-          ? products.find(
-              (item) =>
-                item.id ===
-                editingId
-            )?.createdAt ||
-            new Date().toISOString()
-          : new Date().toISOString(),
     };
-
-    /*
-    ==========================================================
-    UPDATE EXISTING PRODUCT
-    ==========================================================
-    */
-
-    if (editingId) {
-      try {
-        const response =
-          await fetch(
-            `${API_BASE_URL}/api/products/${editingId}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
-              body: JSON.stringify({
-                name: product.name,
-                category:
-                  product.category,
-                year:
-                  product.year ||
-                  new Date()
-                    .getFullYear()
-                    .toString(),
-                status:
-                  product.status ||
-                  "Active",
-                manufacturer:
-                  product.brand,
-                material:
-                  product.material ||
-                  "Not specified",
-                repairability:
-                  product.repairability ||
-                  "Not specified",
-                recyclability:
-                  product.recyclability ||
-                  "Not specified",
-              }),
-            }
-          );
-
-        if (!response.ok) {
-          throw new Error(
-            "Update failed"
-          );
-        }
-
-        const data =
-          await response.json();
-
-        const backendProduct =
-          data.product;
-
-        setProducts(
-          (current) =>
-            current.map(
-              (item) =>
-                item.id ===
-                editingId
-                  ? {
-                      ...item,
-                      ...product,
-                      ...(backendProduct
-                        ? {
-                            id:
-                              backendProduct.id,
-                            productId:
-                              backendProduct.id,
-                            name:
-                              backendProduct.name,
-                            category:
-                              backendProduct.category,
-                            brand:
-                              backendProduct.manufacturer,
-                            year:
-                              backendProduct.year,
-                            status:
-                              backendProduct.status,
-                            material:
-                              backendProduct.material,
-                            repairability:
-                              backendProduct.repairability,
-                            recyclability:
-                              backendProduct.recyclability,
-                          }
-                        : {}),
-                    }
-                  : item
-            )
-        );
-
-        setToast(
-          "Device passport updated in PostgreSQL."
-        );
-      } catch (error) {
-        console.error(error);
-
-        /*
-        Local fallback
-        */
-
-        setProducts(
-          (current) =>
-            current.map(
-              (item) =>
-                item.id ===
-                editingId
-                  ? product
-                  : item
-            )
-        );
-
-        setToast(
-          "Backend unavailable. Saved locally."
-        );
-      }
-    }
-
-    /*
-    ==========================================================
-    CREATE NEW PRODUCT
-    ==========================================================
-    */
-
-    else {
-      try {
-        const response =
-          await fetch(
-            `${API_BASE_URL}/api/products`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
-              body: JSON.stringify({
-                id: generatedId,
-                name: product.name,
-                category:
-                  product.category ||
-                  "Device",
-                year:
-                  product.year ||
-                  new Date()
-                    .getFullYear()
-                    .toString(),
-                status:
-                  product.status ||
-                  "Active",
-                manufacturer:
-                  product.brand,
-                material:
-                  product.material ||
-                  "Not specified",
-                repairability:
-                  product.repairability ||
-                  "Not specified",
-                recyclability:
-                  product.recyclability ||
-                  "Not specified",
-              }),
-            }
-          );
-
-        if (!response.ok) {
-          const errorData =
-            await response.json()
-              .catch(() => null);
-
-          throw new Error(
-            errorData?.message ||
-              "Create failed"
-          );
-        }
-
-        const data =
-          await response.json();
-
-        const backendProduct =
-          data.product;
-
-        const finalProduct = {
-          ...product,
-
-          id:
-            backendProduct?.id ||
-            generatedId,
-
-          productId:
-            backendProduct?.id ||
-            generatedId,
-
-          brand:
-            backendProduct?.manufacturer ||
-            product.brand,
-
-          name:
-            backendProduct?.name ||
-            product.name,
-
-          category:
-            backendProduct?.category ||
-            product.category,
-
-          year:
-            backendProduct?.year ||
-            product.year,
-
-          status:
-            backendProduct?.status ||
-            product.status ||
-            "Active",
-
-          createdAt:
-            backendProduct?.created_at ||
-            product.createdAt,
-        };
-
-        setProducts(
-          (current) => [
-            finalProduct,
-            ...current,
-          ]
-        );
-
-        setToast(
-          "Device passport created in PostgreSQL."
-        );
-      } catch (error) {
-        console.error(error);
-
-        /*
-        Local fallback
-        */
-
-        setProducts(
-          (current) => [
-            product,
-            ...current,
-          ]
-        );
-
-        setToast(
-          "Backend unavailable. Saved locally."
-        );
-      }
-    }
-
-    setForm(emptyProduct);
-    setEditingId(null);
-    setPage("products");
-  };
 
   /*
   ============================================================
@@ -787,55 +1143,72 @@ function App() {
   ============================================================
   */
 
-  const deleteProduct = async (
-    id
-  ) => {
-    try {
-      const response =
-        await fetch(
-          `${API_BASE_URL}/api/products/${id}`,
-          {
-            method: "DELETE",
-          }
+  const deleteProduct =
+    async (id) => {
+      try {
+        if (!API_BASE_URL) {
+          throw new Error(
+            "API URL missing"
+          );
+        }
+
+        const response =
+          await fetch(
+            `${API_BASE_URL}/api/products/${id}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            "Delete failed"
+          );
+        }
+
+        setProducts(
+          (current) =>
+            current.filter(
+              (product) =>
+                product.id !==
+                id
+            )
         );
 
-      if (!response.ok) {
-        throw new Error(
-          "Delete failed"
+        setShowDeleteModal(
+          null
+        );
+
+        setApiStatus(
+          "online"
+        );
+
+        setToast(
+          "Device passport deleted from PostgreSQL."
+        );
+      } catch (error) {
+        console.error(
+          error
+        );
+
+        setProducts(
+          (current) =>
+            current.filter(
+              (product) =>
+                product.id !==
+                id
+            )
+        );
+
+        setShowDeleteModal(
+          null
+        );
+
+        setToast(
+          "Backend unavailable. Deleted locally."
         );
       }
-
-      setProducts(
-        (current) =>
-          current.filter(
-            (product) =>
-              product.id !== id
-          )
-      );
-
-      setShowDeleteModal(null);
-
-      setToast(
-        "Device passport deleted from PostgreSQL."
-      );
-    } catch (error) {
-      console.error(error);
-
-      setProducts(
-        (current) =>
-          current.filter(
-            (product) =>
-              product.id !== id
-          )
-      );
-
-      setShowDeleteModal(null);
-
-      setToast(
-        "Backend unavailable. Deleted locally."
-      );
-    }
-  };
+    };
 
   /*
   ============================================================
@@ -843,13 +1216,29 @@ function App() {
   ============================================================
   */
 
-  const viewProduct = (
-    product
-  ) => {
-    setSelectedProduct(product);
-    setPassportProduct(product);
-    setPage("passport");
-  };
+  const viewProduct =
+    (product) => {
+      const normalized =
+        normalizeProduct(
+          product
+        );
+
+      const finalProduct =
+        normalized ||
+        product;
+
+      setSelectedProduct(
+        finalProduct
+      );
+
+      setPassportProduct(
+        finalProduct
+      );
+
+      setPage(
+        "passport"
+      );
+    };
 
   /*
   ============================================================
@@ -857,11 +1246,12 @@ function App() {
   ============================================================
   */
 
-  const openQR = (
-    product
-  ) => {
-    setShowQR(product);
-  };
+  const openQR =
+    (product) => {
+      setShowQR(
+        product
+      );
+    };
 
   /*
   ============================================================
@@ -870,9 +1260,13 @@ function App() {
   */
 
   const copyPassportLink =
-    async (product) => {
+    async (
+      product
+    ) => {
       const url =
-        getPassportUrl(product);
+        getPassportUrl(
+          product
+        );
 
       try {
         await navigator.clipboard.writeText(
@@ -895,37 +1289,36 @@ function App() {
   ============================================================
   */
 
-  const downloadQR = (
-    product
-  ) => {
-    const canvas =
-      document.getElementById(
-        `qr-${product.id}`
+  const downloadQR =
+    (product) => {
+      const canvas =
+        document.getElementById(
+          `qr-${product.id}`
+        );
+
+      if (!canvas) {
+        return;
+      }
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+      link.download =
+        `${product.id}-QR.png`;
+
+      link.href =
+        canvas.toDataURL(
+          "image/png"
+        );
+
+      link.click();
+
+      setToast(
+        "QR code downloaded."
       );
-
-    if (!canvas) {
-      return;
-    }
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
-    link.download =
-      `${product.id}-QR.png`;
-
-    link.href =
-      canvas.toDataURL(
-        "image/png"
-      );
-
-    link.click();
-
-    setToast(
-      "QR code downloaded."
-    );
-  };
+    };
 
   /*
   ============================================================
@@ -933,17 +1326,26 @@ function App() {
   ============================================================
   */
 
-  const goHome = () => {
-    window.history.pushState(
-      {},
-      "",
-      window.location.pathname
-    );
+  const goHome =
+    () => {
+      window.history.pushState(
+        {},
+        "",
+        window.location.pathname
+      );
 
-    setPassportProduct(null);
-    setSelectedProduct(null);
-    setPage("dashboard");
-  };
+      setPassportProduct(
+        null
+      );
+
+      setSelectedProduct(
+        null
+      );
+
+      setPage(
+        "dashboard"
+      );
+    };
 
   /*
   ============================================================
@@ -951,22 +1353,31 @@ function App() {
   ============================================================
   */
 
-  const goToPassport = (
-    product
-  ) => {
-    const url =
-      getPassportUrl(product);
+  const goToPassport =
+    (product) => {
+      const url =
+        getPassportUrl(
+          product
+        );
 
-    window.history.pushState(
-      {},
-      "",
-      url
-    );
+      window.history.pushState(
+        {},
+        "",
+        url
+      );
 
-    setPassportProduct(product);
-    setSelectedProduct(product);
-    setPage("passport");
-  };
+      setPassportProduct(
+        product
+      );
+
+      setSelectedProduct(
+        product
+      );
+
+      setPage(
+        "passport"
+      );
+    };
 
   /*
   ============================================================
@@ -983,8 +1394,12 @@ function App() {
         product={
           passportProduct
         }
-        onBack={goHome}
-        onHome={goHome}
+        onBack={
+          goHome
+        }
+        onHome={
+          goHome
+        }
       />
     );
   }
@@ -1007,7 +1422,9 @@ function App() {
           </div>
 
           <div>
-            <h1>EcoPass</h1>
+            <h1>
+              EcoPass
+            </h1>
 
             <span>
               Digital Product Passport
@@ -1030,7 +1447,10 @@ function App() {
               )
             }
           >
-            <span>⌂</span>
+            <span>
+              ⌂
+            </span>
+
             Dashboard
           </button>
 
@@ -1046,7 +1466,10 @@ function App() {
               )
             }
           >
-            <span>▦</span>
+            <span>
+              ▦
+            </span>
+
             Products
           </button>
 
@@ -1060,7 +1483,10 @@ function App() {
               openAddProduct
             }
           >
-            <span>＋</span>
+            <span>
+              ＋
+            </span>
+
             Add Product
           </button>
 
@@ -1089,8 +1515,13 @@ function App() {
           </div>
 
           <div className="version">
-            <span>EcoPass</span>
-            <span>v1.0</span>
+            <span>
+              EcoPass
+            </span>
+
+            <span>
+              v1.0
+            </span>
           </div>
 
         </div>
@@ -1109,13 +1540,16 @@ function App() {
 
             <h2>
 
-              {page === "dashboard" &&
+              {page ===
+                "dashboard" &&
                 "Device intelligence, simplified."}
 
-              {page === "products" &&
+              {page ===
+                "products" &&
                 "Your device library"}
 
-              {page === "add" &&
+              {page ===
+                "add" &&
                 (editingId
                   ? "Update device passport"
                   : "Create a new device passport")}
@@ -1128,13 +1562,16 @@ function App() {
 
             <span
               className={
-                apiStatus === "online"
+                apiStatus ===
+                "online"
                   ? "backend-status online"
-                  : apiStatus === "offline"
+                  : apiStatus ===
+                    "offline"
                   ? "backend-status offline"
                   : "backend-status"
               }
             >
+
               <i></i>
 
               {apiStatus ===
@@ -1144,6 +1581,7 @@ function App() {
                   "offline"
                 ? "Backend offline"
                 : "Checking backend..."}
+
             </span>
 
             <button
@@ -1152,7 +1590,10 @@ function App() {
                 openAddProduct
               }
             >
-              <span>＋</span>
+              <span>
+                ＋
+              </span>
+
               Add Device
             </button>
 
@@ -1163,7 +1604,9 @@ function App() {
         {page ===
           "dashboard" && (
           <Dashboard
-            products={products}
+            products={
+              products
+            }
             totalProducts={
               totalProducts
             }
@@ -1176,7 +1619,9 @@ function App() {
             onView={
               viewProduct
             }
-            onQR={openQR}
+            onQR={
+              openQR
+            }
             onProducts={() =>
               setPage(
                 "products"
@@ -1191,7 +1636,9 @@ function App() {
             products={
               filteredProducts
             }
-            search={search}
+            search={
+              search
+            }
             setSearch={
               setSearch
             }
@@ -1211,13 +1658,18 @@ function App() {
                 product
               )
             }
-            onQR={openQR}
+            onQR={
+              openQR
+            }
           />
         )}
 
-        {page === "add" && (
+        {page ===
+          "add" && (
           <AddProductPage
-            form={form}
+            form={
+              form
+            }
             editingId={
               editingId
             }
@@ -1228,10 +1680,14 @@ function App() {
               saveProduct
             }
             onCancel={() => {
-              setEditingId(null);
+              setEditingId(
+                null
+              );
+
               setForm(
                 emptyProduct
               );
+
               setPage(
                 "products"
               );
@@ -1243,12 +1699,18 @@ function App() {
 
       {showQR && (
         <QRModal
-          product={showQR}
-          url={getPassportUrl(
+          product={
             showQR
-          )}
+          }
+          url={
+            getPassportUrl(
+              showQR
+            )
+          }
           onClose={() =>
-            setShowQR(null)
+            setShowQR(
+              null
+            )
           }
           onDownload={() =>
             downloadQR(
@@ -1261,7 +1723,10 @@ function App() {
             )
           }
           onOpen={() => {
-            setShowQR(null);
+            setShowQR(
+              null
+            );
+
             goToPassport(
               showQR
             );
@@ -1334,7 +1799,6 @@ function App() {
   );
 }
 
-
 /*
 ================================================================
 DASHBOARD
@@ -1381,10 +1845,14 @@ function Dashboard({
 
             <button
               className="hero-button"
-              onClick={onAdd}
+              onClick={
+                onAdd
+              }
             >
               Create Device
-              <span>→</span>
+              <span>
+                →
+              </span>
             </button>
 
             <button
@@ -1410,7 +1878,9 @@ function Dashboard({
 
             <div className="orb-inner">
 
-              <span>♻</span>
+              <span>
+                ♻
+              </span>
 
               <strong>
                 DPP
@@ -1425,12 +1895,18 @@ function Dashboard({
           </div>
 
           <div className="floating-tag tag-one">
-            <span>✓</span>
+            <span>
+              ✓
+            </span>
+
             Traceable
           </div>
 
           <div className="floating-tag tag-two">
-            <span>↗</span>
+            <span>
+              ↗
+            </span>
+
             Reusable
           </div>
 
@@ -1510,15 +1986,22 @@ function Dashboard({
         {products.length ===
         0 ? (
           <EmptyProducts
-            onAdd={onAdd}
+            onAdd={
+              onAdd
+            }
           />
         ) : (
           <div className="product-grid">
 
             {products
-              .slice(0, 4)
+              .slice(
+                0,
+                4
+              )
               .map(
-                (product) => (
+                (
+                  product
+                ) => (
                   <ProductCard
                     key={
                       product.id
@@ -1544,7 +2027,6 @@ function Dashboard({
     </div>
   );
 }
-
 
 /*
 ================================================================
@@ -1594,7 +2076,6 @@ function StatCard({
   );
 }
 
-
 /*
 ================================================================
 PRODUCTS PAGE
@@ -1636,7 +2117,9 @@ function ProductsPage({
 
         <button
           className="primary-button"
-          onClick={onAdd}
+          onClick={
+            onAdd
+          }
         >
           ＋ Add Device
         </button>
@@ -1645,10 +2128,14 @@ function ProductsPage({
 
       <div className="search-bar">
 
-        <span>⌕</span>
+        <span>
+          ⌕
+        </span>
 
         <input
-          value={search}
+          value={
+            search
+          }
           onChange={(
             event
           ) =>
@@ -1664,13 +2151,17 @@ function ProductsPage({
       {products.length ===
       0 ? (
         <EmptyProducts
-          onAdd={onAdd}
+          onAdd={
+            onAdd
+          }
         />
       ) : (
         <div className="product-grid large">
 
           {products.map(
-            (product) => (
+            (
+              product
+            ) => (
               <ProductCard
                 key={
                   product.id
@@ -1700,7 +2191,6 @@ function ProductsPage({
     </div>
   );
 }
-
 
 /*
 ================================================================
@@ -1736,7 +2226,9 @@ function ProductCard({
         ) : (
           <div className="product-placeholder">
 
-            <span>▣</span>
+            <span>
+              ▣
+            </span>
 
             <small>
               DPP
@@ -1754,10 +2246,12 @@ function ProductCard({
         </span>
 
         <span className="product-category">
+
           {
             product.category ||
             "Device"
           }
+
         </span>
 
       </div>
@@ -1765,10 +2259,12 @@ function ProductCard({
       <div className="product-info">
 
         <div className="product-id">
+
           {
             product.productId ||
             product.id
           }
+
         </div>
 
         <h4>
@@ -1776,11 +2272,13 @@ function ProductCard({
         </h4>
 
         <p className="product-brand">
+
           {
             product.brand ||
             product.manufacturer ||
             "Not specified"
           }
+
         </p>
 
         <div className="product-mini-grid">
@@ -1792,10 +2290,12 @@ function ProductCard({
             </span>
 
             <strong>
+
               {
                 product.modelNumber ||
                 "—"
               }
+
             </strong>
 
           </div>
@@ -1807,10 +2307,12 @@ function ProductCard({
             </span>
 
             <strong>
+
               {
                 product.deviceCondition ||
                 "—"
               }
+
             </strong>
 
           </div>
@@ -1878,7 +2380,6 @@ function ProductCard({
   );
 }
 
-
 /*
 ================================================================
 ADD PRODUCT PAGE
@@ -1904,9 +2405,11 @@ function AddProductPage({
           </span>
 
           <h3>
+
             {editingId
               ? "Update device"
               : "Add a new device"}
+
           </h3>
 
           <p>
@@ -1924,10 +2427,12 @@ function AddProductPage({
           </span>
 
           <strong>
+
             {
               form.productId ||
               "DPP-0000"
             }
+
           </strong>
 
         </div>
@@ -1936,7 +2441,9 @@ function AddProductPage({
 
       <form
         className="product-form"
-        onSubmit={onSave}
+        onSubmit={
+          onSave
+        }
       >
 
         <FormSection
@@ -2432,7 +2939,9 @@ function AddProductPage({
                 ? "Save Changes"
                 : "Save Device"}
 
-              <span>→</span>
+              <span>
+                →
+              </span>
             </button>
 
           </div>
@@ -2444,7 +2953,6 @@ function AddProductPage({
     </div>
   );
 }
-
 
 /*
 ================================================================
@@ -2487,7 +2995,6 @@ function FormSection({
   );
 }
 
-
 /*
 ================================================================
 FIELD
@@ -2511,15 +3018,23 @@ function Field({
         {label}
 
         {required && (
-          <span>*</span>
+          <span>
+            *
+          </span>
         )}
 
       </label>
 
       <input
-        type={type}
-        name={name}
-        value={value}
+        type={
+          type
+        }
+        name={
+          name
+        }
+        value={
+          value
+        }
         onChange={
           onChange
         }
@@ -2534,7 +3049,6 @@ function Field({
     </div>
   );
 }
-
 
 /*
 ================================================================
@@ -2565,7 +3079,9 @@ function EmptyProducts({
 
       <button
         className="primary-button"
-        onClick={onAdd}
+        onClick={
+          onAdd
+        }
       >
         Create First Device
       </button>
@@ -2573,7 +3089,6 @@ function EmptyProducts({
     </div>
   );
 }
-
 
 /*
 ================================================================
@@ -2625,9 +3140,15 @@ function QRModal({
         <div className="qr-box">
 
           <QRCodeCanvas
-            id={`qr-${product.id}`}
-            value={url}
-            size={240}
+            id={
+              `qr-${product.id}`
+            }
+            value={
+              url
+            }
+            size={
+              240
+            }
             level="M"
             includeMargin
           />
@@ -2647,10 +3168,12 @@ function QRModal({
             </strong>
 
             <span>
+
               {
                 product.productId ||
                 product.id
               }
+
             </span>
 
           </div>
@@ -2701,9 +3224,9 @@ function QRModal({
             </strong>
 
             <p>
-              Make sure your phone
-              and computer are on the
-              same Wi-Fi network.
+              Scan the QR code from any
+              device that can access the
+              public website.
             </p>
 
             <small>
@@ -2721,7 +3244,6 @@ function QRModal({
     </div>
   );
 }
-
 
 /*
 ================================================================
@@ -2743,6 +3265,7 @@ function PassportPage({
         "Device specifications provided",
       icon: "▣",
     },
+
     {
       number: "02",
       title: "Traceability",
@@ -2751,6 +3274,7 @@ function PassportPage({
         "Manufacturing information not provided",
       icon: "⌂",
     },
+
     {
       number: "03",
       title: "Repair & reuse",
@@ -2760,6 +3284,7 @@ function PassportPage({
         "Repair and reuse information not provided",
       icon: "↻",
     },
+
     {
       number: "04",
       title: "Recycle",
@@ -2828,7 +3353,10 @@ function PassportPage({
         <div className="passport-breadcrumb">
 
           DIGITAL DEVICE PASSPORT{" "}
-          <span>/</span>{" "}
+          <span>
+            /
+          </span>{" "}
+
           {
             product.productId ||
             product.id
@@ -2899,11 +3427,13 @@ function PassportPage({
               Manufactured by{" "}
 
               <strong>
+
                 {
                   product.brand ||
                   product.manufacturer ||
                   "Not specified"
                 }
+
               </strong>
 
             </p>
@@ -2926,10 +3456,12 @@ function PassportPage({
                 </span>
 
                 <strong>
+
                   {
                     product.productId ||
                     product.id
                   }
+
                 </strong>
 
               </div>
@@ -2941,10 +3473,12 @@ function PassportPage({
                 </span>
 
                 <strong>
+
                   {
                     product.modelNumber ||
                     "—"
                   }
+
                 </strong>
 
               </div>
@@ -2956,11 +3490,13 @@ function PassportPage({
                 </span>
 
                 <strong>
+
                   {
                     formatDate(
                       product.manufacturingDate
                     )
                   }
+
                 </strong>
 
               </div>
@@ -3040,7 +3576,9 @@ function PassportPage({
           <div className="lifecycle-line">
 
             {lifecycle.map(
-              (item) => (
+              (
+                item
+              ) => (
                 <div
                   className="lifecycle-step"
                   key={
@@ -3212,7 +3750,6 @@ function PassportPage({
   );
 }
 
-
 /*
 ================================================================
 METRIC
@@ -3246,7 +3783,6 @@ function Metric({
     </div>
   );
 }
-
 
 /*
 ================================================================
